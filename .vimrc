@@ -6,12 +6,17 @@ Plug 'davidhalter/jedi-vim'
 Plug 'vim-airline/vim-airline-themes'
 Plug 'Valloric/YouCompleteMe'
 Plug 'scrooloose/syntastic'
+
+"GUIs
 Plug 'altercation/vim-colors-solarized'
+Plug 'liuchengxu/space-vim-dark'
+
 Plug 'tpope/vim-fugitive'
 Plug 'nvie/vim-flake8'
 Plug 'jmcantrell/vim-virtualenv'
 Plug 'jpalardy/vim-slime'
 Plug 'fs111/pydoc.vim'
+Plug 'skywind3000/asyncrun.vim'
 
 call plug#end()
 
@@ -27,7 +32,8 @@ set laststatus=2
 
 syntax enable
 set background=dark
-colorscheme solarized
+"colorscheme solarized
+colorscheme space-vim-dark
 
 "Airline Settings
 let g:airline_theme='powerlineish'
