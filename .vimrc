@@ -4,8 +4,9 @@ call plug#begin('~/.vim/plugged')
 Plug 'vim-airline/vim-airline'
 Plug 'davidhalter/jedi-vim'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'Valloric/YouCompleteMe'
-Plug 'scrooloose/syntastic'
+Plug 'Valloric/YouCompleteMe', { 'do': './install.py' }
+"Plug 'scrooloose/syntastic'
+Plug 'w0rp/ale'
 
 "GUIs
 Plug 'altercation/vim-colors-solarized'
@@ -17,6 +18,10 @@ Plug 'jmcantrell/vim-virtualenv'
 Plug 'jpalardy/vim-slime'
 Plug 'fs111/pydoc.vim'
 Plug 'skywind3000/asyncrun.vim'
+Plug 'scrooloose/nerdcommenter'
+Plug 'tpope/vim-surround'
+"Plug 'Yggdroot/indentLine'
+
 
 call plug#end()
 
@@ -30,10 +35,12 @@ set laststatus=2
 "
 "General{
 
+set encoding=utf-8
 syntax enable
 set background=dark
 "colorscheme solarized
 colorscheme space-vim-dark
+:set cursorline
 
 "Airline Settings
 let g:airline_theme='powerlineish'
@@ -41,7 +48,6 @@ let g:airline_left_sep='›'
 let g:airline_right_sep='‹'
 
 "Fonts
-
 set guioptions-=T
 set lines=40
 set guifont=Andale\ Mono\ Regular\ 12,Menlo\ Regular\ 11,Consolas\ Regular\ 12,Courier\ New\ Regular\ 14
@@ -51,8 +57,20 @@ set hidden "allow buffer switching without saving (?)
 let python_higlight_all=1
 syntax on
 
-
+"Folding
+"set foldmethod=indent
 "Preset Settings
+
+""Python Buffer Reader
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
 "Author: Henry Lin
 " 
 " Here are some helpful vim settings that vim may not have on by default.
