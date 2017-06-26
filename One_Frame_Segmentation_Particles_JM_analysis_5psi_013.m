@@ -57,9 +57,9 @@ u = 1;
 % Arbitrary number for Rosin-Rammler Distribution               
 R = 50;
 %Particle Diameter measured on impact image
-ParticleDiam = 2.4948;       % in millimeters
+ParticleDiam = 2.2108;       % in millimeters
 ParticleDensity = 917 ;       % in kg/m^3
-ParticleVelocity = 42.413;   % in m/sec
+ParticleVelocity = 39.4172;   % in m/sec
 ParticleY = 5.2*1000000;      % MPa*1000000=Pascals = kg/(m*sec^2)
 ParticleKc = 120*1000;        % (kN/m^3/2)*1000 = Newtons/m^3/2
 ParticleA = 3838;             % in m/sec
@@ -68,7 +68,7 @@ ParticleA = 3838;             % in m/sec
 %----------------- 2-Reading the avi video clip into obj -----------------%
 
 % obj = VideoReader(VideoClip);
-I = imread('5psi_13.tif');
+I = imread('5psi_1.tif');
 I = imcrop(I,[1 1 6250 4380]);
 %I = imcrop(I,[900 550 5100 3490]); crop used in data set #4
 %I = imadjust(I);
