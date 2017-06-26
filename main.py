@@ -48,5 +48,11 @@ def chlog(path, runnum, correcteddia, correctedv):
     print('Corrected TEMA Mean Diameter mm: ' + correcteddia)
     print('Corrected Projectile velocity m/s ' + correctedv)
 
+def cleanFolder(runnum):
+    dirname = os.path.join(os.getcwd(), '5psi-'+runnum)
+    for filename in os.listdir(dirname):
+        if filename.startswith('Frame'):
+            os.remove(os.path.join(dirname, filename))
+
 correctFiles()
 
