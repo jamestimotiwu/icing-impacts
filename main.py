@@ -65,22 +65,5 @@ def cleanFolder(runnum):
         '.xlsx'), os.path.join(dirname, 'Segmentation 5psi-' + runnum +
             '.xlsx')) 
 
-#    for filename in os.listdir(dirname):
-#        print(filename)
-#        if os.path.isdir(filename):
-#            print('Directory ' + filename + ' removed!')
-#            shutil.rmtree(os.path.join(dirname, filename))
-#        elif filename.startswith('Frame') or filename.startswith('figure1') or filename.startswith('Segmentation'):
-#            os.remove(os.path.join(dirname, filename))
-#    
-#    shutil.copy2(os.path.join(dirname, 'Copy_of_Segmentation 5psi-'+ runnum +
-#        '.xlsx'), os.path.join(dirname, 'Segmentation 5psi-' + runnum +
-#            '.xlsx')) 
-#    shutil.copy2(os.path.join(dirname, 'Segmentation 5psi-' + runnum +
-#       '.xlsx'), os.path.join(dirname, 'Copy_of_Segmentation 5psi-'+ runnum +
-#        '.xlsx'))
-
-
-
 correctFiles()
 
