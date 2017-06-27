@@ -1,7 +1,7 @@
 #Correct values of MATLAB data analysis software
 #Author: James Timotiwu
 import os
-import sys
+import shutil 
 from pandas import DataFrame, read_csv
 import pandas as pd
 import numpy as np
@@ -50,9 +50,37 @@ def chlog(path, runnum, correcteddia, correctedv):
 
 def cleanFolder(runnum):
     dirname = os.path.join(os.getcwd(), '5psi-'+runnum)
-    for filename in os.listdir(dirname):
-        if filename.startswith('Frame'):
-            os.remove(os.path.join(dirname, filename))
+    
+    for root, dirs, files in os.walk(dirname):
+
+        for d in dirs:
+            for filename in os.listdir(os.path.join(root, d)):
+                os.remove(os.path.join(root, d, filename))
+        for f in files: 
+            if f.startswith('Frame') or f.startswith('figure1') or f.startswith('Segmentation'):
+                os.remove(os.path.join(dirname, f ))
+    
+    print('Dataset 5psi-'+runnum+' cleaned!')
+    shutil.copy2(os.path.join(dirname, 'Copy_of_Segmentation 5psi-'+ runnum +
+        '.xlsx'), os.path.join(dirname, 'Segmentation 5psi-' + runnum +
+            '.xlsx')) 
+
+#    for filename in os.listdir(dirname):
+#        print(filename)
+#        if os.path.isdir(filename):
+#            print('Directory ' + filename + ' removed!')
+#            shutil.rmtree(os.path.join(dirname, filename))
+#        elif filename.startswith('Frame') or filename.startswith('figure1') or filename.startswith('Segmentation'):
+#            os.remove(os.path.join(dirname, filename))
+#    
+#    shutil.copy2(os.path.join(dirname, 'Copy_of_Segmentation 5psi-'+ runnum +
+#        '.xlsx'), os.path.join(dirname, 'Segmentation 5psi-' + runnum +
+#            '.xlsx')) 
+#    shutil.copy2(os.path.join(dirname, 'Segmentation 5psi-' + runnum +
+#       '.xlsx'), os.path.join(dirname, 'Copy_of_Segmentation 5psi-'+ runnum +
+#        '.xlsx'))
+
+
 
 correctFiles()
 
