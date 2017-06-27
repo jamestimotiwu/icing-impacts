@@ -11,7 +11,7 @@ correcteddf = pd.read_excel(os.path.join(os.getcwd(),'5psi test data_Corrected.x
 
 #Read and insert files
 def correctFiles():
-    for i in range(2,21):
+    for i in range(6,21):
         runnum = str(i)
         if i < 10:
             runnum = '0' + str(i)
@@ -23,7 +23,7 @@ def correctFiles():
     
         correcteddia = str(np.round(correcteddf['Tema Mean Diameter mm'][1+i], 4))
         correctedv = str(np.round(correcteddf['Projectile velocity m/s'][1+i], 4))
-
+        
         if os.path.isfile(path):
     
             scontent = open(path).read()
@@ -41,18 +41,22 @@ def correctFiles():
             matlabf.write(scontent)
             matlabf.close()
             chlog(path, runnum, correcteddia, correctedv) #log all parameters changed  
-    
+        cleanFolder(runnum)
+
+#Fn name: chlog
+#Use: Tracks changes among runs
 def chlog(path, runnum, correcteddia, correctedv):
     print('Opening ... ' + path)
     print('Run Number: ' + runnum)
     print('Corrected TEMA Mean Diameter mm: ' + correcteddia)
     print('Corrected Projectile velocity m/s ' + correctedv)
 
+#Fn name: cleanFolder
+#Use: cleans the folder of the directory
 def cleanFolder(runnum):
     dirname = os.path.join(os.getcwd(), '5psi-'+runnum)
     
     for root, dirs, files in os.walk(dirname):
-
         for d in dirs:
             for filename in os.listdir(os.path.join(root, d)):
                 os.remove(os.path.join(root, d, filename))
