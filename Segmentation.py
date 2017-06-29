@@ -28,6 +28,7 @@ import imageadj as ij
 #WedgeAngle = 45
 #k=1?
 
+#Main definition for program
 def main():
     cropped = openimage(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi_1.tiff'))
    #write cropped
