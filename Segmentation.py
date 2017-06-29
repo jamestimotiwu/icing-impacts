@@ -30,16 +30,36 @@ import imageadj as ij
 
 def main():
     cropped = openimage(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi_1.tiff'))
-    #write cropped
-#    Iadj = ij.imadjust(cropped, [0, 0.04], [])
+   #write cropped
+   
+#Brightness Adjust Image
+#I = imadjust(I, [0 0.04], []); #Brightness Adj? Save as I2 here as original
+#imwrite brightness adj
+    Iadj = ij.imadjust(cropped, vin=[0, 11])
     
+#imread Baseline.tif, Crop, Adjust Brightness, write
     bgimg = openimage(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi baseline.tiff')) 
-#    bgadj = ij.imadjust(bgimg, [0, 0.04], [])
-    isubt = cropped - bgimg
-    
+    bgadj = ij.imadjust(bgimg, vin=[0, 11])
+   
+#subtract I8 and Background imsubtract(I, Background), convert to I8, write
+#imwrite(I8, '05-I8 After Crop-ImAdj-BkgndSubt.tif', 'compression', 'none')
+    isubt = Iadj - bgadj
+
+#InvertIm(I) to get inverted image, convert to I8, write as '06-I8 After Crop
+#-ImAdj-BkgndSubt-Invert.tif'
     isubt = np.invert(isubt)
 
+#DO thresholding, level = graythresh(I) - Otsu to determine threshold number, =
+#to thresholdused = level
+#DO segmentation, I = im2bw(I, level<- threshold used), imwrite as '07-I After
+#Crop-ImAdj-BkgndSubt-Thresh.tif'
     threshed = threshold_otsu(isubt)
+
+#Use I2 as Ior, invert final segmented I and write as '08-bwf Ready for
+#Segmentation.tif'
+
+#cc = bwconncomp(bw5, connectivity) to find objects using a connectivity of 8?
+#r = cc.NumObjects to find number of framgents, print r
     binary = isubt > threshed
     fig, axes = plt.subplots(ncols=3, figsize=(8, 2.5))
     ax = axes.ravel()
@@ -53,7 +73,7 @@ def main():
     
     ax[1].hist(isubt.ravel(), bins=256)
     ax[1].set_title('Histogram')
-    ax[1].axvline(threshe, color='r')
+    ax[1].axvline(threshed, color='r')
     
     ax[2].imshow(binary, cmap=plt.cm.gray)
     ax[2].set_title('Thresholded')
@@ -70,27 +90,4 @@ def openimage(image):
     #imwrite(I8, '01-18 Original_Cropped.tif', 'compression', 'none')
 
 
-#Brightness Adjust Image
-#I = imadjust(I, [0 0.04], []); #Brightness Adj? Save as I2 here as original
-#imwrite brightness adj
-
-#imread Baseline.tif, Crop, Adjust Brightness, write
-
-#subtract I8 and Background imsubtract(I, Background), convert to I8, write
-#imwrite(I8, '05-I8 After Crop-ImAdj-BkgndSubt.tif', 'compression', 'none')
-
-#InvertIm(I) to get inverted image, convert to I8, write as '06-I8 After Crop
-#-ImAdj-BkgndSubt-Invert.tif'
-
-#DO thresholding, level = graythresh(I) - Otsu to determine threshold number, =
-#to thresholdused = level
-
-#DO segmentation, I = im2bw(I, level<- threshold used), imwrite as '07-I After
-#Crop-ImAdj-BkgndSubt-Thresh.tif'
-
-#Use I2 as Ior, invert final segmented I and write as '08-bwf Ready for
-#Segmentation.tif'
-
-#cc = bwconncomp(bw5, connectivity) to find objects using a connectivity of 8?
-#r = cc.NumObjects to find number of framgents, print r
 main()
