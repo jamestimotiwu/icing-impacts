@@ -6,8 +6,11 @@ import os
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider, Button, RadioButtons
 #scikit-image imports
+import skimage.util as skutil
 import skimage.io as io
+import skimage.exposure as expo
 from skimage import img_as_ubyte #to convert to 8-bit uint
 from skimage.filters import threshold_otsu
 #from pandas import DataFrame, read_csv
@@ -36,47 +39,65 @@ def main():
 #Brightness Adjust Image
 #I = imadjust(I, [0 0.04], []); #Brightness Adj? Save as I2 here as original
 #imwrite brightness adj
-    Iadj = ij.imadjust(cropped, vin=[0, 11])
-    
+#    Iadj = ij.imadjust(cropped)
+
+    p1, p2 = np.percentile(cropped, (97, 99.994))
+    Iadj = expo.rescale_intensity(cropped, in_range=(p1,p2))
+#    Iadj = expo.rescale_intensity(cropped)
+    I8 = img_as_ubyte(cropped)
 #imread Baseline.tif, Crop, Adjust Brightness, write
+
     bgimg = openimage(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi baseline.tiff')) 
-    bgadj = ij.imadjust(bgimg, vin=[0, 11])
-   
+#    bgadj = ij.imadjust(bgimg)
+    p3, p4 = np.percentile(bgimg, (0,100))
+    bgadj = expo.rescale_intensity(bgimg, in_range = (p1,p2))
+
+    b8 = img_as_ubyte(bgimg)
+#    B8 = img_as_ubyte(bgadj)
 #subtract I8 and Background imsubtract(I, Background), convert to I8, write
 #imwrite(I8, '05-I8 After Crop-ImAdj-BkgndSubt.tif', 'compression', 'none')
     isubt = Iadj - bgadj
-
+#    isubt = ropped - bgimg
 #InvertIm(I) to get inverted image, convert to I8, write as '06-I8 After Crop
 #-ImAdj-BkgndSubt-Invert.tif'
-    isubt = np.invert(isubt)
 
+    isubt = skutil.invert(isubt)
+
+#    isubt8 = img_as_ubyte(isubt) #Image as UINT8
 #DO thresholding, level = graythresh(I) - Otsu to determine threshold number, =
 #to thresholdused = level
 #DO segmentation, I = im2bw(I, level<- threshold used), imwrite as '07-I After
 #Crop-ImAdj-BkgndSubt-Thresh.tif'
     threshed = threshold_otsu(isubt)
 
+#    threshed8 = img_as_ubyte(threshed) 
 #Use I2 as Ior, invert final segmented I and write as '08-bwf Ready for
 #Segmentation.tif'
 
 #cc = bwconncomp(bw5, connectivity) to find objects using a connectivity of 8?
 #r = cc.NumObjects to find number of framgents, print r
     binary = isubt > threshed
+
+    binaryinverted = skutil.invert(binary)
     fig, axes = plt.subplots(ncols=3, figsize=(8, 2.5))
     ax = axes.ravel()
     ax[0] = plt.subplot(1, 3, 1, adjustable='box-forced')
-    ax[1] = plt.subplot(1, 3, 2)
+#    ax[1] = plt.subplot(1, 3, 2)
+    ax[1] = plt.subplot(1, 3, 2, sharex=ax[0], sharey=ax[0], adjustable='box-forced')
     ax[2] = plt.subplot(1, 3, 3, sharex=ax[0], sharey=ax[0], adjustable='box-forced')
     
-    ax[0].imshow(isubt, cmap=plt.cm.gray)
+    ax[0].imshow(I8, cmap=plt.cm.gray)
     ax[0].set_title('Original')
     ax[0].axis('off')
+
+    ax[1].imshow(b8, cmap=plt.cm.gray)
+    ax[1].set_title('Original')
+    ax[1].axis('off')
+#    ax[1].hist(isubt.ravel(), bins=40)
+#    ax[1].set_title('Histogram')
+#    ax[1].axvline(threshed, color='r')
     
-    ax[1].hist(isubt.ravel(), bins=256)
-    ax[1].set_title('Histogram')
-    ax[1].axvline(threshed, color='r')
-    
-    ax[2].imshow(binary, cmap=plt.cm.gray)
+    ax[2].imshow(binaryinverted,cmap=plt.cm.gray)
     ax[2].set_title('Thresholded')
     ax[2].axis('off')
 
@@ -86,7 +107,8 @@ def main():
 
 #Read Image, Crop, Convert to I8
 def openimage(image):
-    I8 = img_as_ubyte(io.imread(image)) #Image as UINT8
+    I8 = io.imread(image)
+#    I8 = img_as_ubyte(io.imread(image)) #Image as UINT8
     return I8[1:4380, 1:6250] #Crop Image [1 1 6250 4380]
     #imwrite(I8, '01-18 Original_Cropped.tif', 'compression', 'none')
 
