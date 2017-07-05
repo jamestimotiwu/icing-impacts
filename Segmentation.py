@@ -64,7 +64,7 @@ def main():
 #imwrite(I8, '05-I8 After Crop-ImAdj-BkgndSubt.tif', 'compression', 'none')
     isubt = Iadj - bgadj
 #    isubt = ropped - bgimg
-#InvertIm(I) to get inverted image, convert to I8, write as '06-I8 After Crop
+#InvertIm(I) to get inverted image, convert to I8, write as '06-I8 After Cro
 #-ImAdj-BkgndSubt-Invert.tif'
 
     isubt = skutil.invert(isubt)
