@@ -14,7 +14,7 @@ import skimage.exposure as expo
 from skimage import img_as_ubyte #to convert to 8-bit uint
 from skimage.filters import threshold_otsu
 #from pandas import DataFrame, read_csv
-import imageadj as ij
+#import imageadj as ij
 #runNumber = '010615_Run_n_psi'
 #thresholdUsed = 0.72156862745098
 #connectivity = 8
@@ -33,6 +33,8 @@ import imageadj as ij
 
 #Main definition for program
 def main():
+    io.use_plugin('tifffile')
+
     cropped = openimage(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi_1.tiff'))
    #write cropped
    
@@ -53,6 +55,10 @@ def main():
     bgadj = expo.rescale_intensity(bgimg, in_range = (p1,p2))
 
     b8 = img_as_ubyte(bgimg)
+
+    io.imsave(os.path.join(os.getcwd(), 'data', '5 psi Runs', '5psi_ADJ.tif'),
+            I8)
+    io.imsave(os.path.join(os.getcwd(), 'data', '5 psi Runs', 'BG_ADJ.tif'), b8)
 #    B8 = img_as_ubyte(bgadj)
 #subtract I8 and Background imsubtract(I, Background), convert to I8, write
 #imwrite(I8, '05-I8 After Crop-ImAdj-BkgndSubt.tif', 'compression', 'none')
@@ -90,7 +96,7 @@ def main():
     ax[0].set_title('Original')
     ax[0].axis('off')
 
-    ax[1].imshow(b8, cmap=plt.cm.gray)
+    ax[1].imshow(bgimg, cmap=plt.cm.gray)
     ax[1].set_title('Original')
     ax[1].axis('off')
 #    ax[1].hist(isubt.ravel(), bins=40)
@@ -107,7 +113,8 @@ def main():
 
 #Read Image, Crop, Convert to I8
 def openimage(image):
-    I8 = io.imread(image)
+    io.use_plugin('tifffile')
+    I8 = io.imread(image, plugin='tifffile')
 #    I8 = img_as_ubyte(io.imread(image)) #Image as UINT8
     return I8[1:4380, 1:6250] #Crop Image [1 1 6250 4380]
     #imwrite(I8, '01-18 Original_Cropped.tif', 'compression', 'none')
