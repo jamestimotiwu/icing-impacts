@@ -2,6 +2,9 @@
 # vimignore
 *.swp
 *.swo
+*.swn
+*.swm
+*.m
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
