@@ -7,10 +7,11 @@ import pandas as pd
 import numpy as np
 
 #open excel file with corrected vales
-correcteddf = pd.read_excel(os.path.join(os.getcwd(),'5psi test data_Corrected.xlsx'), sheetname = 'Summary')
+#correcteddf = pd.read_excel(os.path.join(os.getcwd(),'5psi test data_Corrected.xlsx'), sheetname = 'Summary')
 
 #Read and insert files
 def correctFiles():
+    
     for i in range(6,21):
         runnum = str(i)
         if i < 10:
@@ -41,11 +42,13 @@ def correctFiles():
             matlabf.write(scontent)
             matlabf.close()
             chlog(path, runnum, correcteddia, correctedv) #log all parameters changed  
+
         cleanFolder(runnum)
 
 #Fn name: chlog
 #Use: Tracks changes among runs
 def chlog(path, runnum, correcteddia, correctedv):
+
     print('Opening ... ' + path)
     print('Run Number: ' + runnum)
     print('Corrected TEMA Mean Diameter mm: ' + correcteddia)
@@ -54,6 +57,7 @@ def chlog(path, runnum, correcteddia, correctedv):
 #Fn name: cleanFolder
 #Use: cleans the folder of the directory
 def cleanFolder(runnum):
+
     dirname = os.path.join(os.getcwd(), '5psi-'+runnum)
     
     for root, dirs, files in os.walk(dirname):
@@ -69,5 +73,24 @@ def cleanFolder(runnum):
         '.xlsx'), os.path.join(dirname, 'Segmentation 5psi-' + runnum +
             '.xlsx')) 
 
-correctFiles()
+def generateDir(psilevel):
+    
+    runnum = 0 
+
+    for root, dirs, files in os.walk(os.getcwd(), str(psilevel)+'psi'):
+        newdir = str(psilevel) + 'psi-' + str(runnum)
+
+        for f in files:
+            if f.startswith(str(psilevel) + 'psi') and f.endswith('.tiff'):
+                os.makedirs(os.path.join(os.getcwd(),str(psilevel)+'psi',newdir),exist_ok=True)
+                runnum += 1
+        for fi in os.listdir(os.path.join(os.getcwd(), 'src')):
+            shutil.copy2(os.path.join('src', fi),
+                    os.path.join(os.getcwd(),str(psilevel)+'psi',newdir))
+
+    print(runnum)
+generateDir(9)
+
+
+#correctFiles()
 
