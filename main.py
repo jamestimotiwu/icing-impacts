@@ -88,18 +88,14 @@ def chlog(path, runnum, correcteddia, correctedv):
     
     chlogname = os.path.join(os.getcwd(), 'Data Set Modification Log.txt')
 
-    if os.path.isfile(chlogname):
+    if os.path.isfile(chlogname) == False:
         open(chlogname, mode='w')
 
-    log = open(chlogname, mode='a')
-    
-    log_info = 'Opening ... ' + path + '\n' + 'Run Number: ' + runnum + '\n' + 'Corrected TEMA Mean Diameter mm: ' + correcteddia + '\n' + 'Corrected Projectile velocity m/s ' + correctedv
-    
-    print(log_info)
+    with open(chlogname, 'a') as log:
+        log_info = "Opening ... " + path + "\n" + "Run Number: " + runnum + "\n"+ "Corrected TEMA Mean Diameter mm: " + correcteddia + "\n" + "Corrected Projectile velocity m/s " + correctedv
+        print(log_info)
+        log.write(log_info)
 
-    log.write(log_info)
-    log.close()
-    
 #Fn name: cleanFolder
 #Use: cleans the folder of the directory
 def cleanFolder(runnum, psilevel):
@@ -227,23 +223,23 @@ def copy_segmentation_file(psilevel, dirname, fixednum):
     except FileNotFoundError:
         pass
 
-generate_dir(9)
-correctFiles(9, '9psi Summary')
+#generate_dir(9)
+#correctFiles(9, '9psi Summary')
 
-generate_dir(11)
-correctFiles(11, '11psiSummary')
+#generate_dir(11)
+#correctFiles(11, '11psiSummary')
 
-generate_dir(13)
-correctFiles(13, '13psiSummary')
+#generate_dir(13)
+#correctFiles(13, '13psiSummary')
 
-generate_dir(15)
-correctFiles(15, '15psiSummary')
+#generate_dir(15)
+#correctFiles(15, '15psiSummary')
 
-generate_dir(17)
-correctFiles(17, '17 summary')
+#generate_dir(17)
+#correctFiles(17, '17 summary')
 
-generate_dir(7)
-correctFiles(7, '7psi summary')
+#generate_dir(7)
+#correctFiles(7, '7psi summary')
 #generate_dir(9)
         
 
