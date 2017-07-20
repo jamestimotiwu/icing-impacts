@@ -18,13 +18,13 @@ import numpy as np
 # load data frame for corrected velocity data
 def load_dataf(psilevel, sheetname):
 
+    #load correct velocity and particle size data based on psi
     xlsxname = str(psilevel) + 'psi test data.xlsx' 
-
+    #check for corrected data
     if os.path.isfile(os.path.join(os.getcwd(), str(psilevel) + 'psi' ,(str(psilevel) + 'psi test data_Corrected.xlsx'))):
         xlsxname = str(psilevel) + 'psi test data_Corrected.xlsx'
-
+    #full path of data
     path = os.path.join(os.getcwd(), str(psilevel) + 'psi' ,xlsxname)
-    print(path)
 
     return pd.read_excel(path, sheetname)
 
@@ -32,10 +32,10 @@ def load_dataf(psilevel, sheetname):
 def correctFiles(psilevel, sheetname): 
    
     for i in range(1,27): 
-        runnum = str(i) 
-
-        correcteddf = load_dataf(psilevel, sheetname) 
+        runnum = str(i) #experiment case number
+        correcteddf = load_dataf(psilevel, sheetname) #loading full data frame with corrected velocity
         
+        #catch index error when index goes beyond # files
         try:
             correcteddia = str(np.round(correcteddf['Tema Mean Diameter mm'][1+i], 4)) 
             correctedv = str(np.round(correcteddf['Projectile velocity m/s'][1+i], 4)) 
@@ -50,21 +50,22 @@ def correctFiles(psilevel, sheetname):
         path = os.path.join(os.getcwd(),str(psilevel)+'psi', str(psilevel)+'psi-' + 
             runnum,'One_Frame_Segmentation_Particles_JM_analysis_'+str(psilevel)+'psi_0' + 
             runnum + '.m') 
-     
          
         if os.path.isfile(path): 
-     
+            
+            img_ext = '.tiff'
+
             scontent = open(path).read() 
             scontent = scontent.replace('010615_Run_01_5psi','010615_Run_'+ 
                     runnum + 
                     '_'+str(psilevel)+'psi', 1)  #RunNumber 
             scontent = scontent.replace('Segmentation 5psi-01.xlsx', 
-                    'Segmentationi '+str(psilevel)+'psi-'+ runnum + '.xlsx', 1) #str1 
-            scontent = scontent.replace('5psi_1.tif', str(psilevel)+'psi_' + str(i) + '.tif', 1) #imread file to read 
-
+                    'Segmentation '+str(psilevel)+'psi-'+ runnum + '.xlsx', 1) #str1 
+            scontent = scontent.replace('5psi_1.tif', str(psilevel)+'psi_' +
+                    str(i) + img_ext, 1) #imread file to read 
 
             scontent = scontent.replace('5psi baseline.tif', 
-                    str(psilevel)+'psi_' + 'baseline.tif', 1) #imread file to read 
+                    str(psilevel)+'psi_' + 'baseline' + img_ext, 1) #imread file to read 
             #replace diameter from excel sheet with real one and round to 4 
             scontent = scontent.replace('2.2108', correcteddia, 1) 
             #replace velocity round to 4 
@@ -75,10 +76,7 @@ def correctFiles(psilevel, sheetname):
             #'w' is opening in truncate mode/overwrite 
             matlabf.write(scontent) 
             matlabf.close() 
-
-
             chlog(path, runnum, correcteddia, correctedv) #log all parameters changed   
-
 
         cleanFolder(runnum, psilevel) 
 
@@ -92,7 +90,7 @@ def chlog(path, runnum, correcteddia, correctedv):
         open(chlogname, mode='w')
 
     with open(chlogname, 'a') as log:
-        log_info = "Opening ... " + path + "\n" + "Run Number: " + runnum + "\n"+ "Corrected TEMA Mean Diameter mm: " + correcteddia + "\n" + "Corrected Projectile velocity m/s " + correctedv
+        log_info = "\nOpening ... " + path + "\n" + "Run Number: " + runnum + "\n"+ "Corrected TEMA Mean Diameter mm: " + correcteddia + "\n" + "Corrected Projectile velocity m/s " + correctedv
         print(log_info)
         log.write(log_info)
 
@@ -127,6 +125,12 @@ def cleanFolder(runnum, psilevel):
 
     except FileNotFoundError:
         pass
+
+def hist_dir(path):
+    
+    os.mkdir(os.path.join(path, '6-Segmentation-Histograms for Each Frame'))
+    os.mkdir(os.path.join(path, '7-Segmentation-Original Movie Frames Images'))
+    os.mkdir(os.path.join(path, '8-Segmentation-Movie Frames Thresholded Images'))
 
 # Fn name: generate_dir
 # Use: generates entire directories based on tiff file
@@ -166,7 +170,7 @@ def generate_dir(psilevel):
                     newdir = str(psilevel) + 'psi-' + fixednum
 
                     os.mkdir(os.path.join(os.getcwd(),str(psilevel)+'psi',newdir))
-
+                    hist_dir(os.path.join(os.getcwd(),str(psilevel)+'psi',newdir))
                     copyfilesfromsrc(os.path.join(os.getcwd(),
                         str(psilevel)+'psi', newdir), psilevel, newdir,
                         fixednum, f)
@@ -223,23 +227,33 @@ def copy_segmentation_file(psilevel, dirname, fixednum):
     except FileNotFoundError:
         pass
 
-#generate_dir(9)
-#correctFiles(9, '9psi Summary')
+#generate_dir(3)
+#correctFiles(3, 'Summary')
 
-#generate_dir(11)
-#correctFiles(11, '11psiSummary')
+for i in range(1,21):
 
-#generate_dir(13)
-#correctFiles(13, '13psiSummary')
-
-#generate_dir(15)
-#correctFiles(15, '15psiSummary')
-
-#generate_dir(17)
-#correctFiles(17, '17 summary')
+    if i < 10: 
+        runnum = '0' + str(i) 
+    cleanFolder(runnum, '20')
 
 #generate_dir(7)
 #correctFiles(7, '7psi summary')
+#
+#generate_dir(9)
+#correctFiles(9, '9psi Summary')
+#
+#generate_dir(11)
+#correctFiles(11, '11psiSummary')
+#
+#generate_dir(13)
+#correctFiles(13, '13psiSummary')
+#
+#generate_dir(15)
+#correctFiles(15, '15psiSummary')
+#
+#generate_dir(17)
+#correctFiles(17, '17 summary')
+
 #generate_dir(9)
         
 
